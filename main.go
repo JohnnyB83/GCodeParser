@@ -145,6 +145,7 @@ func parseGCode(gCodeString string) {
             gCodeIndex = append(gCodeIndex, currentSegmentIndex...)
             currentSegmentIndex = nil;
             isExtrudingGlobal = false;
+            lastNonExtrusionIndex = currentIndex;
         } else if (isExtruding && !isExtrudingGlobal) {
             // New line
             gCodePoints = append(gCodePoints, lastX, lastY, lastZ);
@@ -152,14 +153,12 @@ func parseGCode(gCodeString string) {
 
             currentSegmentIndex = append(currentSegmentIndex, lastNonExtrusionIndex, currentIndex);
             isExtrudingGlobal = true;
-
         } else {
             // Not extruding
             gCodePoints = append(gCodePoints, lastX, lastY, lastZ);
             gCodeColors = append(gCodeColors, plasticColor[0], plasticColor[1], plasticColor[2]);
 
             lastNonExtrusionIndex = currentIndex;
-
         }
         currentIndex++;
     }
