@@ -63,7 +63,7 @@ func parseGCode(gCodeString string) {
                 plasticColor[0] = 1.0;
                 plasticColor[1] = 1.0;
                 plasticColor[2] = 0.0;
-            case "External perimter":
+            case "External perimeter":
                 plasticColor[0] = 0.96;
                 plasticColor[1] = 0.505;
                 plasticColor[2] = 0.019;
@@ -145,6 +145,12 @@ func parseGCode(gCodeString string) {
             gCodeIndex = append(gCodeIndex, currentSegmentIndex...)
             currentSegmentIndex = nil;
             isExtrudingGlobal = false;
+
+            for i := lastNonExtrusionIndex; i < currentIndex; i++ {
+                gCodeColors[i*3] = plasticColor[0];
+                gCodeColors[i*3+1] = plasticColor[1];
+                gCodeColors[i*3+2] = plasticColor[2]; 
+            }
             lastNonExtrusionIndex = currentIndex;
         } else if (isExtruding && !isExtrudingGlobal) {
             // New line
@@ -158,6 +164,11 @@ func parseGCode(gCodeString string) {
             gCodePoints = append(gCodePoints, lastX, lastY, lastZ);
             gCodeColors = append(gCodeColors, plasticColor[0], plasticColor[1], plasticColor[2]);
 
+            for i := lastNonExtrusionIndex; i < currentIndex; i++ {
+                gCodeColors[i*3] = plasticColor[0];
+                gCodeColors[i*3+1] = plasticColor[1];
+                gCodeColors[i*3+2] = plasticColor[2]; 
+            }
             lastNonExtrusionIndex = currentIndex;
         }
         currentIndex++;
